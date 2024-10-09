@@ -19,7 +19,7 @@ public class SimuladorFila extends Engine {
         super( 
             800,                  // 800 pixels de largura
             600,                  // 600 pixels de largura
-            "Simulador de Filas", // título da janela
+            "Simulador de Fila",  // título da janela
             true,                 // ativa a suavização (antialiasing)
             60 );                 // 60 quadros por segundo
 

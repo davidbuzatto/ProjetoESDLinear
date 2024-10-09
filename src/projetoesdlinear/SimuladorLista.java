@@ -22,7 +22,7 @@ public class SimuladorLista extends Engine {
         super( 
             800,                  // 800 pixels de largura
             600,                  // 600 pixels de largura
-            "Simulador de Listas",// título da janela
+            "Simulador de Lista", // título da janela
             true,                 // ativa a suavização (antialiasing)
             60 );                 // 60 quadros por segundo
 
