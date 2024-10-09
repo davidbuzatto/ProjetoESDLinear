@@ -20,9 +20,6 @@ public class SimuladorPilha extends Engine {
     // pilha que passará pelas operações de empilhar e desempilhar
     private Stack<String> pilha;
     
-    // pilha usada para desenhar os dados da pilha que está sendo operada
-    private Stack<String> pilhaDesenho;
-    
     // valor desempilhado na última operação de desempilhar
     private String valorDesempilhado;
     
@@ -51,17 +48,15 @@ public class SimuladorPilha extends Engine {
     public void criar() {
         
         pilha = new LinkedStack<>();
-        pilhaDesenho = new LinkedStack<>();
         
         raio = 30;
         distanciaEntreElementos = 20;
         tamanhoFonte = 20;
         margemBaixo = 80;
         
-        /*pilha.push( "a" );
+        pilha.push( "a" );
         pilha.push( "b" );
         pilha.push( "c" );
-        atualizarPilhaDesenho();*/
     }
 
     /**
@@ -98,16 +93,16 @@ public class SimuladorPilha extends Engine {
     
     private void desenharPilha() {
         
-        int yInicial = getScreenHeight() - margemBaixo;
         int elementoAtual = 0;
+        int xCentroAnterior = getScreenWidth() / 2;
+        int xCentro = xCentroAnterior;
+        int tamanho = pilha.getSize();
+        int yInicialPilha = getScreenHeight() - margemBaixo - ( raio * 2  + distanciaEntreElementos ) * tamanho;
         
-        int xCentro = getScreenWidth() / 2;
-        int xCentroAnterior = xCentro;
-        
-        for ( String valor : pilhaDesenho ) {
+        for ( String valor : pilha ) {
             
-            int yCentro = yInicial - ( raio * 2  + distanciaEntreElementos ) * elementoAtual;
-            int yCentroAnterior = yInicial - ( raio * 2  + distanciaEntreElementos ) * (elementoAtual-1);
+            int yCentro = yInicialPilha + ( raio * 2  + distanciaEntreElementos ) * (elementoAtual+1);
+            int yCentroAnterior = yInicialPilha + ( raio * 2  + distanciaEntreElementos ) * (elementoAtual+2);
             
             drawCircleLines( xCentro, yCentro, raio, BLACK );
             drawText( valor, 
@@ -118,27 +113,29 @@ public class SimuladorPilha extends Engine {
             
             // arcos    
             // ponto do início (arco de 45 graus)
-            int xAtual = xCentro + (int) ( Math.cos( Math.toRadians( 45 ) ) * raio );
-            int yAtual = yCentro + (int) ( Math.sin( Math.toRadians( 45 ) ) * raio );
-
+            int xInicial = xCentro + (int) ( Math.cos( Math.toRadians( 45 ) ) * raio );
+            int yInicial = yCentro + (int) ( Math.sin( Math.toRadians( 45 ) ) * raio );
+            
             // ponto do fim (arco de 315 graus)
-            int xAnterior = xCentroAnterior + (int) ( Math.cos( Math.toRadians( 315 ) ) * raio );
-            int yAnterior = yCentroAnterior + (int) ( Math.sin( Math.toRadians( 315 ) ) * raio );
+            int xFinal = xCentroAnterior + (int) ( Math.cos( Math.toRadians( 315 ) ) * raio );
+            int yFinal = yCentroAnterior + (int) ( Math.sin( Math.toRadians( 315 ) ) * raio );
 
-            int xControle = ( xAtual + xAnterior ) / 2 + 20;
-            int yControle = ( yAtual + yAnterior ) / 2;
+            int xControle = ( xInicial + xFinal ) / 2 + 20;
+            int yControle = ( yInicial + yFinal ) / 2;
             
             drawSplineSegmentBezierQuadratic( 
-                    xAtual, yAtual, 
+                    xInicial, yInicial, 
                     xControle, yControle,
-                    xAnterior, yAnterior, 
+                    xFinal, yFinal, 
                     1, BLUE );
-            if ( elementoAtual >= 1 ) {
-                desenharSeta( xAnterior, yAnterior, 8, 135, BLUE );
+            
+            if ( elementoAtual == tamanho - 1 ) {
+                drawLine( xFinal - 5, yFinal, xFinal + 5, yFinal, BLUE );
+                drawLine( xFinal - 10, yFinal + 5, xFinal + 10, yFinal + 5, BLUE );
             } else {
-                drawLine( xAnterior - 5, yAnterior, xAnterior + 5, yAnterior, BLUE );
-                drawLine( xAnterior - 10, yAnterior + 5, xAnterior + 10, yAnterior + 5, BLUE );
+                desenharSeta( xFinal, yFinal, 8, 135, BLUE );
             }
+            
             drawText( "anterior", xControle, yControle, tamanhoFonte, BLUE );
             
             elementoAtual++;
@@ -150,16 +147,13 @@ public class SimuladorPilha extends Engine {
             int comp = 20;
             int xFinal = xCentro - raio;
             int xInicial = xFinal - comp;
-            int yCentro = yInicial - ( raio * 2  + distanciaEntreElementos ) * (elementoAtual-1);
+            int yCentro = yInicialPilha + ( raio * 2  + distanciaEntreElementos );
             
             if ( pilha.isEmpty() ) {
-                yCentro = yInicial;
+                yCentro = yInicialPilha;
             }
 
-            drawLine( 
-                    xInicial, yCentro, 
-                    xFinal, yCentro, 
-                    BLACK );
+            drawLine( xInicial, yCentro, xFinal, yCentro, BLACK );
             
             if ( pilha.isEmpty() ) {
                 drawLine( xFinal, yCentro - 5, xFinal, yCentro + 5, BLACK );
@@ -211,7 +205,6 @@ public class SimuladorPilha extends Engine {
         
         if ( valor != null && !valor.isBlank() ) {
             pilha.push( valor );
-            atualizarPilhaDesenho();
         }
                     
     }
@@ -220,21 +213,10 @@ public class SimuladorPilha extends Engine {
         
         try {
             valorDesempilhado = pilha.pop();
-            atualizarPilhaDesenho();
         } catch ( EmptyStackException exc ) {
             // pilha vazia, o retorno será visual
         }
                     
-    }
-    
-    private void atualizarPilhaDesenho() {
-        
-        pilhaDesenho.clear();
-        
-        for ( String valor : pilha ) {
-            pilhaDesenho.push( valor );
-        }
-        
     }
     
     private void desenharSeta( double x, double y, int tamanho, double graus, Color cor ) {
