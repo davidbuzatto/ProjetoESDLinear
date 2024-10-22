@@ -1,6 +1,6 @@
 package projetoesdlinear;
 
-import projetoesdlinear.engine.Engine;
+import br.com.davidbuzatto.jsge.core.Engine;
 
 /**
  * Simulador de deque:
@@ -20,8 +20,8 @@ public class SimuladorDeque extends Engine {
             800,                  // 800 pixels de largura
             600,                  // 600 pixels de largura
             "Simulador de Deque", // título da janela
-            true,                 // ativa a suavização (antialiasing)
-            60 );                 // 60 quadros por segundo
+            60,                   // 60 quadros por segundo
+            true );               // ativa a suavização (antialiasing)
 
     }
 
@@ -30,21 +30,21 @@ public class SimuladorDeque extends Engine {
      * e/ou inicializa os objetos/contextos/variáveis do jogo ou simulação.
      */
     @Override
-    public void criar() {
+    public void create() {
     }
 
     /**
      * Atualiza os objetos/contextos/variáveis do jogo ou simulação.
      */
     @Override
-    public void atualizar() {
+    public void update() {
     }
 
     /**
      * Desenha o estado dos objetos/contextos/variáveis do jogo ou simulação.
      */
     @Override
-    public void desenhar() {
+    public void draw() {
     }
 
     public static void main( String[] args ) {

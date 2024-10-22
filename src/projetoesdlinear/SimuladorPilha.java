@@ -3,10 +3,9 @@ package projetoesdlinear;
 import aesd.ds.exceptions.EmptyStackException;
 import aesd.ds.implementations.linear.LinkedStack;
 import aesd.ds.interfaces.Stack;
+import br.com.davidbuzatto.jsge.core.Engine;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
-import projetoesdlinear.engine.Engine;
 
 /**
  * Simulador de pilha:
@@ -35,8 +34,8 @@ public class SimuladorPilha extends Engine {
             800,                  // 800 pixels de largura
             600,                  // 600 pixels de largura
             "Simulador de Pilha", // título da janela
-            true,                 // ativa a suavização (antialiasing)
-            60 );                 // 60 quadros por segundo
+            60,                   // 60 quadros por segundo
+            true );               // ativa a suavização (antialiasing)
 
     }
 
@@ -45,7 +44,7 @@ public class SimuladorPilha extends Engine {
      * e/ou inicializa os objetos/contextos/variáveis do jogo ou simulação.
      */
     @Override
-    public void criar() {
+    public void create() {
         
         pilha = new LinkedStack<>();
         
@@ -63,21 +62,31 @@ public class SimuladorPilha extends Engine {
      * Atualiza os objetos/contextos/variáveis do jogo ou simulação.
      */
     @Override
-    public void atualizar() {
+    public void update() {
+        
+        if ( isKeyPressed( KEY_ONE ) || isKeyPressed( KEY_KP_1 ) ) {
+            simularEmpilhar();
+        }
+        
+        if ( isKeyPressed( KEY_TWO ) || isKeyPressed( KEY_KP_2 ) ) {
+            simularDesempilhar();
+        }
+                    
     }
 
     /**
      * Desenha o estado dos objetos/contextos/variáveis do jogo ou simulação.
      */
     @Override
-    public void desenhar() {
+    public void draw() {
+        setFontStyle( FONT_BOLD );
         desenharOpcoesEstadoPilha();
         desenharPilha();
     }
 
     private void desenharOpcoesEstadoPilha() {
         
-        int yInicial = 30;
+        int yInicial = 10;
         
         drawText( "1) Empilhar", 10, yInicial, tamanhoFonte, BLACK );
         drawText( "2) Desempilhar", 10, yInicial += 30, tamanhoFonte, BLACK );
@@ -104,10 +113,10 @@ public class SimuladorPilha extends Engine {
             int yCentro = yInicialPilha + ( raio * 2  + distanciaEntreElementos ) * (elementoAtual+1);
             int yCentroAnterior = yInicialPilha + ( raio * 2  + distanciaEntreElementos ) * (elementoAtual+2);
             
-            drawCircleLines( xCentro, yCentro, raio, BLACK );
+            drawCircle( xCentro, yCentro, raio, BLACK );
             drawText( valor, 
                     xCentro - measureText( valor, tamanhoFonte ) / 2, 
-                    yCentro + 5,
+                    yCentro - 8,
                     tamanhoFonte,
                     BLACK );
             
@@ -123,11 +132,10 @@ public class SimuladorPilha extends Engine {
             int xControle = ( xInicial + xFinal ) / 2 + 20;
             int yControle = ( yInicial + yFinal ) / 2;
             
-            drawSplineSegmentBezierQuadratic( 
+            drawQuadCurve( 
                     xInicial, yInicial, 
                     xControle, yControle,
-                    xFinal, yFinal, 
-                    1, BLUE );
+                    xFinal, yFinal, BLUE );
             
             if ( elementoAtual == tamanho - 1 ) {
                 drawLine( xFinal - 5, yFinal, xFinal + 5, yFinal, BLUE );
@@ -136,7 +144,7 @@ public class SimuladorPilha extends Engine {
                 desenharSeta( xFinal, yFinal, 8, 135, BLUE );
             }
             
-            drawText( "anterior", xControle, yControle, tamanhoFonte, BLUE );
+            drawText( "anterior", xControle, yControle - 8, tamanhoFonte, BLUE );
             
             elementoAtual++;
             
@@ -166,35 +174,10 @@ public class SimuladorPilha extends Engine {
             drawText( 
                     tLabel, 
                     xInicial - measureText( tLabel, tamanhoFonte ) - 10, 
-                    yCentro + 5, 
+                    yCentro - 8, 
                     tamanhoFonte, 
                     BLACK );
 
-        }
-        
-    }
-    
-    @Override
-    public void tratarTeclado( KeyEvent e, KeyboardEventType ket ) {
-        
-        if ( ket == KeyboardEventType.PRESSED ) {
-            
-            String valor;
-            
-            switch ( e.getKeyCode() ) {
-                
-                case KeyEvent.VK_1:
-                case KeyEvent.VK_NUMPAD1:
-                    simularEmpilhar();
-                    break;
-                    
-                case KeyEvent.VK_2:
-                case KeyEvent.VK_NUMPAD2:
-                    simularDesempilhar();
-                    break;
-                    
-            }
-            
         }
         
     }
