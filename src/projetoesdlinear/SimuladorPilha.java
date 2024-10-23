@@ -6,6 +6,7 @@ import aesd.ds.interfaces.Stack;
 import br.com.davidbuzatto.jsge.core.Engine;
 import java.awt.Color;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * Simulador de pilha:
@@ -79,7 +80,6 @@ public class SimuladorPilha extends Engine {
      */
     @Override
     public void draw() {
-        setFontStyle( FONT_BOLD );
         desenharOpcoesEstadoPilha();
         desenharPilha();
     }
@@ -184,11 +184,15 @@ public class SimuladorPilha extends Engine {
 
     private void simularEmpilhar() {
         
-        String valor = JOptionPane.showInputDialog( "Valor a empilhar:" );
+        SwingUtilities.invokeLater( () -> {
+            
+            String valor = JOptionPane.showInputDialog( "Valor a empilhar:" );
         
-        if ( valor != null && !valor.isBlank() ) {
-            pilha.push( valor );
-        }
+            if ( valor != null && !valor.isBlank() ) {
+                pilha.push( valor );
+            }
+            
+        });
                     
     }
     
