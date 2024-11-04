@@ -1,6 +1,6 @@
 package projetoesdlinear;
 
-import br.com.davidbuzatto.jsge.core.Engine;
+import br.com.davidbuzatto.jsge.core.engine.EngineFrame;
 
 /**
  * Simulador de fila:
@@ -9,7 +9,7 @@ import br.com.davidbuzatto.jsge.core.Engine;
  * 
  * @author Prof. Dr. David Buzatto
  */
-public class SimuladorFila extends Engine {
+public class SimuladorFila extends EngineFrame {
 
     // declaração de variáveis
 
@@ -35,9 +35,11 @@ public class SimuladorFila extends Engine {
 
     /**
      * Atualiza os objetos/contextos/variáveis do jogo ou simulação.
+     * O parâmetro delta contém o tempo que passou entre o quadro
+     * anterior e o quadro atual.
      */
     @Override
-    public void update() {
+    public void update( double delta ) {
     }
 
     /**

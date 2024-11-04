@@ -3,7 +3,7 @@ package projetoesdlinear;
 import aesd.ds.exceptions.EmptyStackException;
 import aesd.ds.implementations.linear.LinkedStack;
 import aesd.ds.interfaces.Stack;
-import br.com.davidbuzatto.jsge.core.Engine;
+import br.com.davidbuzatto.jsge.core.engine.EngineFrame;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Prof. Dr. David Buzatto
  */
-public class SimuladorPilha extends Engine {
+public class SimuladorPilha extends EngineFrame {
 
     // pilha que passará pelas operações de empilhar e desempilhar
     private Stack<String> pilha;
@@ -61,9 +61,11 @@ public class SimuladorPilha extends Engine {
 
     /**
      * Atualiza os objetos/contextos/variáveis do jogo ou simulação.
+     * O parâmetro delta contém o tempo que passou entre o quadro
+     * anterior e o quadro atual.
      */
     @Override
-    public void update() {
+    public void update( double delta ) {
         
         if ( isKeyPressed( KEY_ONE ) || isKeyPressed( KEY_KP_1 ) ) {
             simularEmpilhar();
