@@ -7,8 +7,6 @@ import br.com.davidbuzatto.jsge.core.engine.EngineFrame;
 import br.com.davidbuzatto.jsge.imgui.GuiButton;
 import br.com.davidbuzatto.jsge.imgui.GuiTextField;
 import java.awt.Color;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 /**
  * Simulador de pilha:
