@@ -4,6 +4,8 @@ import aesd.ds.exceptions.EmptyStackException;
 import aesd.ds.implementations.linear.LinkedStack;
 import aesd.ds.interfaces.Stack;
 import br.com.davidbuzatto.jsge.core.engine.EngineFrame;
+import br.com.davidbuzatto.jsge.imgui.GuiButton;
+import br.com.davidbuzatto.jsge.imgui.GuiTextField;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -27,6 +29,10 @@ public class SimuladorPilha extends EngineFrame {
     private int distanciaEntreElementos;
     private int tamanhoFonte;
     private int margemBaixo;
+    
+    private GuiButton btnEmpilhar;
+    private GuiButton btnDesempilhar;
+    private GuiTextField txtDado;
 
     public SimuladorPilha() {
 
@@ -47,6 +53,8 @@ public class SimuladorPilha extends EngineFrame {
     @Override
     public void create() {
         
+        useAsDependencyForIMGUI();
+        
         pilha = new LinkedStack<>();
         
         raio = 30;
@@ -57,6 +65,11 @@ public class SimuladorPilha extends EngineFrame {
         pilha.push( "a" );
         pilha.push( "b" );
         pilha.push( "c" );
+        
+        btnEmpilhar = new GuiButton( 10, 10, 100, 20, "Empilhar" );
+        btnDesempilhar = new GuiButton( 10, 40, 100, 20, "Desempilhar" );
+        txtDado = new GuiTextField( btnEmpilhar.getX() + btnEmpilhar.getWidth() + 5, 10, 100, 20, "" );
+        
     }
 
     /**
@@ -67,11 +80,15 @@ public class SimuladorPilha extends EngineFrame {
     @Override
     public void update( double delta ) {
         
-        if ( isKeyPressed( KEY_ONE ) || isKeyPressed( KEY_KP_1 ) ) {
+        btnEmpilhar.update( delta );
+        btnDesempilhar.update( delta );
+        txtDado.update( delta );
+        
+        if ( btnEmpilhar.isMousePressed() ) {
             simularEmpilhar();
         }
         
-        if ( isKeyPressed( KEY_TWO ) || isKeyPressed( KEY_KP_2 ) ) {
+        if ( btnDesempilhar.isMousePressed() ) {
             simularDesempilhar();
         }
                     
@@ -82,16 +99,19 @@ public class SimuladorPilha extends EngineFrame {
      */
     @Override
     public void draw() {
-        desenharOpcoesEstadoPilha();
+        
+        desenharEstadoPilha();
         desenharPilha();
+        
+        btnEmpilhar.draw();
+        btnDesempilhar.draw();
+        txtDado.draw();
+        
     }
 
-    private void desenharOpcoesEstadoPilha() {
+    private void desenharEstadoPilha() {
         
-        int yInicial = 10;
-        
-        drawText( "1) Empilhar", 10, yInicial, tamanhoFonte, BLACK );
-        drawText( "2) Desempilhar", 10, yInicial += 30, tamanhoFonte, BLACK );
+        int yInicial = 45;
         
         drawText( "Desempilhou: " + ( valorDesempilhado == null ? "nenhum" : valorDesempilhado ), 
                 10, yInicial += 30, tamanhoFonte, BLUE );
@@ -186,15 +206,12 @@ public class SimuladorPilha extends EngineFrame {
 
     private void simularEmpilhar() {
         
-        SwingUtilities.invokeLater( () -> {
-            
-            String valor = JOptionPane.showInputDialog( "Valor a empilhar:" );
+        String dado = txtDado.getValue().trim();
         
-            if ( valor != null && !valor.isBlank() ) {
-                pilha.push( valor );
-            }
-            
-        });
+        if ( !dado.isEmpty() ) {
+            pilha.push( dado );
+            txtDado.setValue( "" );
+        }
                     
     }
     
