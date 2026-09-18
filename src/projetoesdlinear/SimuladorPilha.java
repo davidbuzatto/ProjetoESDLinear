@@ -7,6 +7,8 @@ import br.com.davidbuzatto.jsge.core.engine.EngineFrame;
 import br.com.davidbuzatto.jsge.imgui.GuiButton;
 import br.com.davidbuzatto.jsge.imgui.GuiTextField;
 import java.awt.Color;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * Simulador de pilha:
@@ -64,8 +66,8 @@ public class SimuladorPilha extends EngineFrame {
         pilha.push( "b" );
         pilha.push( "c" );
         
-        btnEmpilhar = new GuiButton( 10, 10, 100, 20, "Empilhar" );
-        btnDesempilhar = new GuiButton( 10, 40, 100, 20, "Desempilhar" );
+        btnEmpilhar = new GuiButton( getScreenWidth() - 215, 10, 100, 20, "Empilhar" );
+        btnDesempilhar = new GuiButton( getScreenWidth() - 215, 40, 100, 20, "Desempilhar" );
         txtDado = new GuiTextField( btnEmpilhar.getX() + btnEmpilhar.getWidth() + 5, 10, 100, 20, "" );
         
     }
@@ -82,12 +84,37 @@ public class SimuladorPilha extends EngineFrame {
         btnDesempilhar.update( delta );
         txtDado.update( delta );
         
+        if ( isKeyPressed( KEY_ONE ) || isKeyPressed( KEY_KP_1 ) ) {
+            SwingUtilities.invokeLater( () -> {
+                String valor = JOptionPane.showInputDialog( "Valor a empilhar:" );
+                if ( valor != null && !valor.isBlank() ) {
+                    pilha.push( valor );
+                }
+            });
+        }
+        
+        if ( isKeyPressed( KEY_TWO ) || isKeyPressed( KEY_KP_2 ) ) {
+            try {
+                valorDesempilhado = pilha.pop();
+            } catch ( EmptyStackException exc ) {
+                // pilha vazia, o retorno será visual
+            }
+        }
+        
         if ( btnEmpilhar.isMousePressed() ) {
-            simularEmpilhar();
+            String valor = txtDado.getValue().trim();
+            if ( !valor.isEmpty() ) {
+                pilha.push( valor );
+                txtDado.setValue( "" );
+            }
         }
         
         if ( btnDesempilhar.isMousePressed() ) {
-            simularDesempilhar();
+            try {
+                valorDesempilhado = pilha.pop();
+            } catch ( EmptyStackException exc ) {
+                // pilha vazia, o retorno será visual
+            }
         }
                     
     }
@@ -109,7 +136,10 @@ public class SimuladorPilha extends EngineFrame {
 
     private void desenharEstadoPilha() {
         
-        int yInicial = 45;
+        int yInicial = 10;
+        
+        drawText( "1) Empilhar", 10, yInicial, tamanhoFonte, BLACK );
+        drawText( "2) Desempilhar", 10, yInicial += 30, tamanhoFonte, BLACK );
         
         drawText( "Desempilhou: " + ( valorDesempilhado == null ? "nenhum" : valorDesempilhado ), 
                 10, yInicial += 30, tamanhoFonte, BLUE );
@@ -200,27 +230,6 @@ public class SimuladorPilha extends EngineFrame {
 
         }
         
-    }
-
-    private void simularEmpilhar() {
-        
-        String dado = txtDado.getValue().trim();
-        
-        if ( !dado.isEmpty() ) {
-            pilha.push( dado );
-            txtDado.setValue( "" );
-        }
-                    
-    }
-    
-    private void simularDesempilhar() {
-        
-        try {
-            valorDesempilhado = pilha.pop();
-        } catch ( EmptyStackException exc ) {
-            // pilha vazia, o retorno será visual
-        }
-                    
     }
     
     private void desenharSeta( double x, double y, int tamanho, double graus, Color cor ) {
